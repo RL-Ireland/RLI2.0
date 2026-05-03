@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="JS/jquery.textfill.js"></script>
+    <script src="JS/rl-websocket.js"></script>
+    <script src="JS/tempWS.js"></script>
     <style>
-  @import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@1,700&display=swap');
-  </style>
+        @import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@1,700&display=swap');
+    </style>
 </head>
 <div>
     <link href="CSS/Stats-Table.css" rel="stylesheet" />
@@ -14,10 +17,10 @@
             <div class="rlis-overlay-tourney-top">
                 <div class="rlis-overlay-left-spacer"></div>
                 <div class="rlis-overlay-tourney-info-area">
-          <span class="rlis-overlay-tourney-text">
-            <span>RLI TOURNAMENT</span>
-            <br />
-          </span>
+                    <span class="rlis-overlay-tourney-text">
+                        <span>RLI TOURNAMENT</span>
+                        <br />
+                    </span>
                 </div>
                 <div class="rlis-overlay-right-spacer"></div>
             </div>
@@ -33,51 +36,53 @@
                         <div class="rlis-overlay-blue-scoreboard-area">
                             <div class="rlis-overlay-blue-spacer"></div>
                             <div class="rlis-overlay-blue-logo-area">
-                                <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="blueImg"/>
+                                <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="blueImg" />
                             </div>
                             <div class="rlis-overlay-blue-team-info-area">
-                                <div class="rlis-overlay-blue-team-name-area" id="blueTeamNameArea" style="width:225px; height:50px;">
-                  <span class="rlis-overlay-blue-team-name" id="blueTeamName">
-                    <span>Team Name</span>
-                    <br />
-                  </span>
+                                <div class="rlis-overlay-blue-team-name-area" id="blueTeamNameArea"
+                                    style="width:225px; height:50px;">
+                                    <span class="rlis-overlay-blue-team-name" id="blueTeamName">
+                                        <span>Team Name</span>
+                                        <br />
+                                    </span>
                                 </div>
                                 <div class="rlis-overlay-blue-series-score">
-                                    <span class="rlis-overlay-blue-g1"id="blueG1">__</span>
-                                    <span class="rlis-overlay-blue-g2"id="blueG2">__</span>
-                                    <span class="rlis-overlay-blue-g3"id="blueG3">__</span>
-                                    <span class="rlis-overlay-blue-g4"id="blueG4">__</span>
-                                    <span class="rlis-overlay-blue-g5"id="blueG5">__</span>
+                                    <span class="rlis-overlay-blue-g1" id="blueG1">__</span>
+                                    <span class="rlis-overlay-blue-g2" id="blueG2">__</span>
+                                    <span class="rlis-overlay-blue-g3" id="blueG3">__</span>
+                                    <span class="rlis-overlay-blue-g4" id="blueG4">__</span>
+                                    <span class="rlis-overlay-blue-g5" id="blueG5">__</span>
                                 </div>
                             </div>
                             <div class="rlis-overlay-blue-score-area">
-                                <span class="rlis-overlay-blue-score"id="blueScore">0</span>
+                                <span class="rlis-overlay-blue-score" id="blueScore">0</span>
                             </div>
                         </div>
                         <div class="rlis-overlay-timer-area">
-                            <span class="rlis-overlay-timer"id="timer">5:00</span>
+                            <span class="rlis-overlay-timer" id="timer">5:00</span>
                         </div>
                         <div class="rlis-overlay-orange-scoreboard-area">
                             <div class="rlis-overlay-orange-score-area">
-                                <span class="rlis-overlay-orange-score"id="orangeScore">0</span>
+                                <span class="rlis-overlay-orange-score" id="orangeScore">0</span>
                             </div>
                             <div class="rlis-overlay-orange-team-info-area">
-                                <div class="rlis-overlay-orange-team-name-area" id="orangeTeamNameArea" style="width:225px; height:50px;">
-                  <span class="rlis-overlay-orange-team-name" id="orangeTeamName">
-                    <span>Team Name</span>
-                    <br />
-                  </span>
+                                <div class="rlis-overlay-orange-team-name-area" id="orangeTeamNameArea"
+                                    style="width:225px; height:50px;">
+                                    <span class="rlis-overlay-orange-team-name" id="orangeTeamName">
+                                        <span>Team Name</span>
+                                        <br />
+                                    </span>
                                 </div>
                                 <div class="rlis-overlay-orange-series-score">
-                                    <span class="rlis-overlay-orange-g1"id="orangeG1">__</span>
-                                    <span class="rlis-overlay-orange-g2"id="orangeG2">__</span>
-                                    <span class="rlis-overlay-orange-g3"id="orangeG3">__</span>
-                                    <span class="rlis-overlay-orange-g4"id="orangeG4">__</span>
-                                    <span class="rlis-overlay-orange-g5"id="orangeG5">__</span>
+                                    <span class="rlis-overlay-orange-g1" id="orangeG1">__</span>
+                                    <span class="rlis-overlay-orange-g2" id="orangeG2">__</span>
+                                    <span class="rlis-overlay-orange-g3" id="orangeG3">__</span>
+                                    <span class="rlis-overlay-orange-g4" id="orangeG4">__</span>
+                                    <span class="rlis-overlay-orange-g5" id="orangeG5">__</span>
                                 </div>
                             </div>
                             <div class="rlis-overlay-orange-logo-area">
-                                <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="orangeImg"/>
+                                <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="orangeImg" />
                             </div>
                             <div class="rlis-overlay-orange-spacer"></div>
                         </div>
@@ -87,16 +92,16 @@
                     <div class="rlis-overlay-bottom-left-spacer"></div>
                     <div class="rlis-overlay-info-area">
                         <div class="rlis-overlay-info-area-left">
-              <span class="rlis-overlay-info-left-text"id="gameText">
-                <span>Game 1</span>
-                <br />
-              </span>
+                            <span class="rlis-overlay-info-left-text" id="gameText">
+                                <span>Game 1</span>
+                                <br />
+                            </span>
                         </div>
                         <div class="rlis-overlay-info-area-middle">
-              <span class="rlis-overlay-stage-text">
-                <span>GROUP STAGE</span>
-                <br />
-              </span>
+                            <span class="rlis-overlay-stage-text">
+                                <span>GROUP STAGE</span>
+                                <br />
+                            </span>
                         </div>
                         <div class="rlis-overlay-info-area-right">
                             <span class="rlis-overlay-info-right-text">BO9</span>
@@ -280,4 +285,5 @@
 </div>
 
 <script src="JS/Stats-Table.js"></script>
+
 </html>

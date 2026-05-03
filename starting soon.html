@@ -4,8 +4,18 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="JS/jquery.textfill.js"></script>
-    <script src="JS/rl-websocket.js"></script>
-    <script src="JS/tempWS.js"></script>
+    <script>
+        var intervalId = window.setInterval(function () {
+            var oldDate = new Date();
+            var temp;
+            if (oldDate.getMinutes() < 10) {
+                var newDate = oldDate.getHours() + ":0" + oldDate.getMinutes();
+            } else {
+                var newDate = oldDate.getHours() + ":" + oldDate.getMinutes();
+            }
+            time.innerHTML = newDate;
+        }, 500);
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@1,700&display=swap');
     </style>
@@ -175,11 +185,7 @@
         <!-- BOTTOM LOGO-->
         <div class="casters-container25">
             <!--Use ther slideshow in obs-->
-            <!--<img
-                    src="Images/ltxacademy.png"
-                    alt="image"
-                    class="casters-image8"
-            />-->
+            <!--<img src="Images/ltxacademy.png" alt="image" class="casters-image8" />-->
         </div>
     </div>
     <!-- BOTTOM -->
@@ -187,7 +193,7 @@
         <div class="casters-container27">
             <div class="casters-container28">
                 <div class="casters-container29">
-                    <span class="casters-text14" id="headlineText">Cork LAN 2023</span>
+                    <span class="casters-text14" id="headlineText">STARTING SOON</span>
                 </div>
                 <div class="casters-container30">
                     <span class="casters-text15" id="time">09:00</span>
@@ -212,6 +218,5 @@
         </div>
     </div>
 </div>
-<script src="JS/casters.js"></script>
 
 </html>

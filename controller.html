@@ -1,347 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="JS/jquery.textfill.js"></script>
   <script src="JS/import.js"></script>
   <script src="https://apis.google.com/js/api.js"></script>
+  <script src="JS/rl-websocket.js"></script>
+  <script src="JS/tempWS.js"></script>
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@1,700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@1,700&display=swap');
   </style>
 </head>
+
 <body>
 
-<div>
-  <link href="CSS/controller.css" rel="stylesheet" />
-  <div class="controller-container">
-    <div class="rlis-overlay-tourney-area">
-      <div class="rlis-overlay-tourney-top">
-        <div class="rlis-overlay-left-spacer"></div>
-        <div class="rlis-overlay-tourney-info-area">
-          <span class="rlis-overlay-tourney-text">
-            <span>RLI TOURNAMENT</span>
-            <br />
-          </span>
-        </div>
-        <div class="rlis-overlay-right-spacer"></div>
-      </div>
-    </div>
-    <div class="rlis-overlay-overlay-top">
-      <div class="rlis-overlay-top-left-spacer">
-        <div class="rlis-overlay-blue-names">
-        </div>
-      </div>
-      <div class="rlis-overlay-scoreboard">
-        <div class="rlis-overlay-scoreboard-top">
-          <div class="rlis-overlay-full-score-area">
-            <div class="rlis-overlay-blue-scoreboard-area">
-              <div class="rlis-overlay-blue-spacer"></div>
-              <div class="rlis-overlay-blue-logo-area">
-                <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="blueImg"/>
-              </div>
-              <div class="rlis-overlay-blue-team-info-area">
-                <div class="rlis-overlay-blue-team-name-area" id="blueTeamNameArea" style="width:225px; height:50px;">
-                  <span class="rlis-overlay-blue-team-name" id="blueTeamName">
-                    <span>Team Name</span>
-                    <br />
-                  </span>
-                </div>
-                <div class="rlis-overlay-blue-series-score">
-                  <span class="rlis-overlay-blue-g1"id="blueG1">__</span>
-                  <span class="rlis-overlay-blue-g2"id="blueG2">__</span>
-                  <span class="rlis-overlay-blue-g3"id="blueG3">__</span>
-                  <span class="rlis-overlay-blue-g4"id="blueG4">__</span>
-                  <span class="rlis-overlay-blue-g5"id="blueG5">__</span>
-                </div>
-              </div>
-              <div class="rlis-overlay-blue-score-area">
-                <span class="rlis-overlay-blue-score"id="blueScore">0</span>
-              </div>
-            </div>
-            <div class="rlis-overlay-timer-area">
-              <span class="rlis-overlay-timer"id="timer">5:00</span>
-            </div>
-            <div class="rlis-overlay-orange-scoreboard-area">
-              <div class="rlis-overlay-orange-score-area">
-                <span class="rlis-overlay-orange-score"id="orangeScore">0</span>
-              </div>
-              <div class="rlis-overlay-orange-team-info-area">
-                <div class="rlis-overlay-orange-team-name-area" id="orangeTeamNameArea" style="width:225px; height:50px;">
-                  <span class="rlis-overlay-orange-team-name" id="orangeTeamName">
-                    <span>Team Name</span>
-                    <br />
-                  </span>
-                </div>
-                <div class="rlis-overlay-orange-series-score">
-                  <span class="rlis-overlay-orange-g1"id="orangeG1">__</span>
-                  <span class="rlis-overlay-orange-g2"id="orangeG2">__</span>
-                  <span class="rlis-overlay-orange-g3"id="orangeG3">__</span>
-                  <span class="rlis-overlay-orange-g4"id="orangeG4">__</span>
-                  <span class="rlis-overlay-orange-g5"id="orangeG5">__</span>
-                </div>
-              </div>
-              <div class="rlis-overlay-orange-logo-area">
-                <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="orangeImg"/>
-              </div>
-              <div class="rlis-overlay-orange-spacer"></div>
-            </div>
-          </div>
-        </div>
-        <div class="rlis-overlay-scoreboard-bottom">
-          <div class="rlis-overlay-bottom-left-spacer"></div>
-          <div class="rlis-overlay-info-area">
-            <div class="rlis-overlay-info-area-left">
-              <span class="rlis-overlay-info-left-text"id="gameText">
-                <span>Game 1</span>
-                <br />
-              </span>
-            </div>
-            <div class="rlis-overlay-info-area-middle">
-              <span class="rlis-overlay-stage-text">
-                <span>GROUP STAGE</span>
-                <br />
-              </span>
-            </div>
-            <div class="rlis-overlay-info-area-right">
-              <span class="rlis-overlay-info-right-text">BO9</span>
-            </div>
-          </div>
-          <div class="rlis-overlay-bottom-right-spacer"></div>
-        </div>
-      </div>
-      <div class="rlis-overlay-top-right-spacer">
-        <div class="rlis-overlay-orange-names">
-        </div>
-      </div>
-    </div>
-    <div class="controller-general-info">
-      <div class="controller-left-spacer1"></div>
-      <div class="controller-auto-set-names-area">
-        <h1 class="controller-auto-set-names-text">
-          <span>Auto Set Names</span>
-        </h1>
-        <input
-                type="radio"
-                checked="true"
-                class="controller-chk-auto-set-names"
-                id="autoNames"
-                name="teamOptions"
-        />
-        <br />
-        <h1 class="controller-auto-set-names-text">
-          <span>Use Google Sheet</span>
-        </h1>
-        <input
-                type="radio"
-                class="controller-chk-auto-set-names"
-                id="sheetNames"
-                name="teamOptions"
-        />
-        <br />
-      </div>
-      <div class="controller-tourney-abbrv-area">
-        <h1 class="controller-tourney-abbrv-text">
-          <span>Tournament abbrv.</span>
-          <br />
-        </h1>
-        <input
-                type="text"
-                placeholder="Tournament Name"
-                class="controller-txt-tourney-abbrv input"
-                id="tourneyAbbrv"
-        />
-        <button class="controller-button button">Set</button>
-      </div>
-      <div class="controller-tourney-stage-area">
-        <h1 class="controller-tourney-stage-text">
-          <span>Tournament Stage</span>
-          <br />
-        </h1>
-        <input
-                type="text"
-                placeholder="Group Stage"
-                class="controller-txt-tourney-stage input"
-                id="tourneyStage"
-        />
-        <button class="controller-button01 button">Set</button>
-      </div>
-      <div class="controller-no-series-area">
-        <button class="button">
-          <span class="controller-text14">
-            <span>No Series</span>
-            <br />
-          </span>
-        </button>
-        <button class="button01">
-          <span class="controller-text17">Bo3</span>
-        </button>
-        <button class="button02">
-          <span class="controller-text18">
-            <span>B05</span>
-            <br />
-          </span>
-        </button>
-        <button class="button03">
-          <span class="controller-text21">
-            <span>Bo7</span>
-            <br />
-          </span>
-        </button>
-        <button class="button04">
-          <span class="controller-text78">
-            <span>Bo9</span>
-            <br />
-          </span>
-        </button>
-      </div>
-      <div class="controller-auto-score-series-area">
-        <h1 class="controller-tourney-stage-text">
-          <span>Blue Series Score</span>
-          <br />
-        </h1>
-        <button class="button04" id="bluePlus">
-              <span class="controller-text46">
-                <span>+1 Game</span>
-                <br />
-              </span>
-        </button>
-        <button class="button04" id="blueMinus">
-              <span class="controller-text49">
-                <span>-1 Game</span>
-                <br />
-              </span>
-        </button>
-      </div>
-      <div class="controller-series-area">
-        <h1 class="controller-tourney-stage-text">
-          <span>Orange Series Score</span>
-          <br />
-        </h1>
-        <button class="button04" id="orangePlus">
-              <span class="controller-text55">
-                <span>+1 Game</span>
-                <br />
-              </span>
-        </button>
-        <button class="button04" id="orangeMinus">
-              <span class="controller-text58">
-                <span>-1 Game</span>
-                <br />
-              </span>
-        </button>
-      </div>
-      <div class="controller-right-spacer1">
-      </div>
-    </div>
-    <div class="controller-overlay-body">
-      <div class="controller-blue-controls">
-        <div class="controller-blue-team-names">
-
-          <div class="controller-container01">
-          </div>
-          <div class="controller-container02">
-
-          </div>
-        </div>
-        <div class="controller-container03">
-          <div class="controller-container04">
-            <h1 class="controller-text43">
-              <span>Google Auth</span>
+  <div>
+    <link href="CSS/controller.css" rel="stylesheet" />
+    <div class="controller-container">
+      <div class="rlis-overlay-tourney-area">
+        <div class="rlis-overlay-tourney-top">
+          <div class="rlis-overlay-left-spacer"></div>
+          <div class="rlis-overlay-tourney-info-area">
+            <span class="rlis-overlay-tourney-text">
+              <span>RLI TOURNAMENT</span>
               <br />
-            </h1>
+            </span>
           </div>
-          <div class="controller-container05">
-            <input
-                    type="text"
-                    placeholder="API_KEY"
-                    class="controller-txt-tourney-stage input"
-                    id="API_KEY"
-            />
-            <input
-                    type="text"
-                    placeholder="CLIENT_ID"
-                    class="controller-txt-tourney-stage input"
-                    id="CLIENT_ID"
-            />
-            <button class="button" id="update" style="visibility:hidden;">
-          <span class="controller-text18">
-            <span>Update</span>
-            <br />
-          </span>
-            </button>
-            <button class="button" id="startAuto" style="visibility:hidden;">
-          <span class="controller-text18">
-            <span>Start Auto Update</span>
-            <br />
-          </span>
-            </button>
-            <button class="button" id="stopAuto" style="visibility:hidden;">
-          <span class="controller-text18">
-            <span>Stop Auto Update</span>
-            <br />
-          </span>
-            </button>
-            <span class="controller-text24" style="visibility:hidden;">
-          <span id="googleAuthText">Awaiting Auth....</span>
-          <br />
-        </span>
+          <div class="rlis-overlay-right-spacer"></div>
+        </div>
+      </div>
+      <div class="rlis-overlay-overlay-top">
+        <div class="rlis-overlay-top-left-spacer">
+          <div class="rlis-overlay-blue-names">
+          </div>
+        </div>
+        <div class="rlis-overlay-scoreboard">
+          <div class="rlis-overlay-scoreboard-top">
+            <div class="rlis-overlay-full-score-area">
+              <div class="rlis-overlay-blue-scoreboard-area">
+                <div class="rlis-overlay-blue-spacer"></div>
+                <div class="rlis-overlay-blue-logo-area">
+                  <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="blueImg" />
+                </div>
+                <div class="rlis-overlay-blue-team-info-area">
+                  <div class="rlis-overlay-blue-team-name-area" id="blueTeamNameArea" style="width:225px; height:50px;">
+                    <span class="rlis-overlay-blue-team-name" id="blueTeamName">
+                      <span>Team Name</span>
+                      <br />
+                    </span>
+                  </div>
+                  <div class="rlis-overlay-blue-series-score">
+                    <span class="rlis-overlay-blue-g1" id="blueG1">__</span>
+                    <span class="rlis-overlay-blue-g2" id="blueG2">__</span>
+                    <span class="rlis-overlay-blue-g3" id="blueG3">__</span>
+                    <span class="rlis-overlay-blue-g4" id="blueG4">__</span>
+                    <span class="rlis-overlay-blue-g5" id="blueG5">__</span>
+                  </div>
+                </div>
+                <div class="rlis-overlay-blue-score-area">
+                  <span class="rlis-overlay-blue-score" id="blueScore">0</span>
+                </div>
+              </div>
+              <div class="rlis-overlay-timer-area">
+                <span class="rlis-overlay-timer" id="timer">5:00</span>
+              </div>
+              <div class="rlis-overlay-orange-scoreboard-area">
+                <div class="rlis-overlay-orange-score-area">
+                  <span class="rlis-overlay-orange-score" id="orangeScore">0</span>
+                </div>
+                <div class="rlis-overlay-orange-team-info-area">
+                  <div class="rlis-overlay-orange-team-name-area" id="orangeTeamNameArea"
+                    style="width:225px; height:50px;">
+                    <span class="rlis-overlay-orange-team-name" id="orangeTeamName">
+                      <span>Team Name</span>
+                      <br />
+                    </span>
+                  </div>
+                  <div class="rlis-overlay-orange-series-score">
+                    <span class="rlis-overlay-orange-g1" id="orangeG1">__</span>
+                    <span class="rlis-overlay-orange-g2" id="orangeG2">__</span>
+                    <span class="rlis-overlay-orange-g3" id="orangeG3">__</span>
+                    <span class="rlis-overlay-orange-g4" id="orangeG4">__</span>
+                    <span class="rlis-overlay-orange-g5" id="orangeG5">__</span>
+                  </div>
+                </div>
+                <div class="rlis-overlay-orange-logo-area">
+                  <img src="Images/rli_logo.png" style="height:75px; width:auto;" id="orangeImg" />
+                </div>
+                <div class="rlis-overlay-orange-spacer"></div>
+              </div>
+            </div>
+          </div>
+          <div class="rlis-overlay-scoreboard-bottom">
+            <div class="rlis-overlay-bottom-left-spacer"></div>
+            <div class="rlis-overlay-info-area">
+              <div class="rlis-overlay-info-area-left">
+                <span class="rlis-overlay-info-left-text" id="gameText">
+                  <span>Game 1</span>
+                  <br />
+                </span>
+              </div>
+              <div class="rlis-overlay-info-area-middle">
+                <span class="rlis-overlay-stage-text">
+                  <span>GROUP STAGE</span>
+                  <br />
+                </span>
+              </div>
+              <div class="rlis-overlay-info-area-right">
+                <span class="rlis-overlay-info-right-text">BO9</span>
+              </div>
+            </div>
+            <div class="rlis-overlay-bottom-right-spacer"></div>
+          </div>
+        </div>
+        <div class="rlis-overlay-top-right-spacer">
+          <div class="rlis-overlay-orange-names">
           </div>
         </div>
       </div>
-      <div class="controller-orange-controls">
-        <div class="controller-container06">
-          <div class="controller-container07">
-            <h1 class="controller-text43">
-            <span>OBS Auth</span>
-            <br />
-            </h1>
-          </div>
-          <div class="controller-container08">
-            <input
-                    type="text"
-                    placeholder="IP (IPv4 Address)"
-                    class="controller-txt-tourney-stage input"
-                    id="IP"
-            />
-            <input
-                    type="text"
-                    placeholder="PORT"
-                    class="controller-txt-tourney-stage input"
-                    id="port"
-            />
-            <input
-                    type="text"
-                    placeholder="PASSWORD"
-                    class="controller-txt-tourney-stage input"
-                    id="password"
-            />
-            <button class="button" id="connect">
-          <span class="controller-text18">
-            <span>Connect</span>
-            <br />
-          </span>
-            </button>
-            <button class="button" id="disconnect">
-          <span class="controller-text18">
-            <span>Disconnect</span>
-            <br />
-          </span>
-            </button>
-            <span class="controller-text24">
-          <span id="authText">Awaiting Auth....</span>
+      <div class="controller-general-info">
+        <div class="controller-left-spacer1"></div>
+        <div class="controller-auto-set-names-area">
+          <h1 class="controller-auto-set-names-text">
+            <span>Auto Set Names</span>
+          </h1>
+          <input type="radio" checked="true" class="controller-chk-auto-set-names" id="autoNames" name="teamOptions" />
           <br />
-        </span>
+          <h1 class="controller-auto-set-names-text">
+            <span>Use Google Sheet</span>
+          </h1>
+          <input type="radio" class="controller-chk-auto-set-names" id="sheetNames" name="teamOptions" />
+          <br />
+        </div>
+        <div class="controller-tourney-abbrv-area">
+          <h1 class="controller-tourney-abbrv-text">
+            <span>Tournament abbrv.</span>
+            <br />
+          </h1>
+          <input type="text" placeholder="Tournament Name" class="controller-txt-tourney-abbrv input"
+            id="tourneyAbbrv" />
+          <button class="controller-button button">Set</button>
+        </div>
+        <div class="controller-tourney-stage-area">
+          <h1 class="controller-tourney-stage-text">
+            <span>Tournament Stage</span>
+            <br />
+          </h1>
+          <input type="text" placeholder="Group Stage" class="controller-txt-tourney-stage input" id="tourneyStage" />
+          <button class="controller-button01 button">Set</button>
+        </div>
+        <div class="controller-no-series-area">
+          <button class="button">
+            <span class="controller-text14">
+              <span>No Series</span>
+              <br />
+            </span>
+          </button>
+          <button class="button01">
+            <span class="controller-text17">Bo3</span>
+          </button>
+          <button class="button02">
+            <span class="controller-text18">
+              <span>B05</span>
+              <br />
+            </span>
+          </button>
+          <button class="button03">
+            <span class="controller-text21">
+              <span>Bo7</span>
+              <br />
+            </span>
+          </button>
+          <button class="button04">
+            <span class="controller-text78">
+              <span>Bo9</span>
+              <br />
+            </span>
+          </button>
+        </div>
+        <div class="controller-auto-score-series-area">
+          <h1 class="controller-tourney-stage-text">
+            <span>Blue Series Score</span>
+            <br />
+          </h1>
+          <button class="button04" id="bluePlus">
+            <span class="controller-text46">
+              <span>+1 Game</span>
+              <br />
+            </span>
+          </button>
+          <button class="button04" id="blueMinus">
+            <span class="controller-text49">
+              <span>-1 Game</span>
+              <br />
+            </span>
+          </button>
+        </div>
+        <div class="controller-series-area">
+          <h1 class="controller-tourney-stage-text">
+            <span>Orange Series Score</span>
+            <br />
+          </h1>
+          <button class="button04" id="orangePlus">
+            <span class="controller-text55">
+              <span>+1 Game</span>
+              <br />
+            </span>
+          </button>
+          <button class="button04" id="orangeMinus">
+            <span class="controller-text58">
+              <span>-1 Game</span>
+              <br />
+            </span>
+          </button>
+        </div>
+        <div class="controller-right-spacer1">
+        </div>
+      </div>
+      <div class="controller-overlay-body">
+        <div class="controller-blue-controls">
+          <div class="controller-blue-team-names">
+
+            <div class="controller-container01">
+            </div>
+            <div class="controller-container02">
+
+            </div>
+          </div>
+          <div class="controller-container03">
+            <div class="controller-container04">
+              <h1 class="controller-text43">
+                <span>Google Auth</span>
+                <br />
+              </h1>
+            </div>
+            <div class="controller-container05">
+              <input type="text" placeholder="API_KEY" class="controller-txt-tourney-stage input" id="API_KEY" />
+              <input type="text" placeholder="CLIENT_ID" class="controller-txt-tourney-stage input" id="CLIENT_ID" />
+              <button class="button" id="update" style="visibility:hidden;">
+                <span class="controller-text18">
+                  <span>Update</span>
+                  <br />
+                </span>
+              </button>
+              <button class="button" id="startAuto" style="visibility:hidden;">
+                <span class="controller-text18">
+                  <span>Start Auto Update</span>
+                  <br />
+                </span>
+              </button>
+              <button class="button" id="stopAuto" style="visibility:hidden;">
+                <span class="controller-text18">
+                  <span>Stop Auto Update</span>
+                  <br />
+                </span>
+              </button>
+              <span class="controller-text24" style="visibility:hidden;">
+                <span id="googleAuthText">Awaiting Auth....</span>
+                <br />
+              </span>
+            </div>
           </div>
         </div>
-        <div class="controller-container09">
+        <div class="controller-orange-controls">
+          <div class="controller-container06">
+            <div class="controller-container07">
+              <h1 class="controller-text43">
+                <span>OBS Auth</span>
+                <br />
+              </h1>
+            </div>
+            <div class="controller-container08">
+              <input type="text" placeholder="IP (IPv4 Address)" class="controller-txt-tourney-stage input" id="IP" />
+              <input type="text" placeholder="PORT" class="controller-txt-tourney-stage input" id="port" />
+              <input type="text" placeholder="PASSWORD" class="controller-txt-tourney-stage input" id="password" />
+              <button class="button" id="connect">
+                <span class="controller-text18">
+                  <span>Connect</span>
+                  <br />
+                </span>
+              </button>
+              <button class="button" id="disconnect">
+                <span class="controller-text18">
+                  <span>Disconnect</span>
+                  <br />
+                </span>
+              </button>
+              <span class="controller-text24">
+                <span id="authText">Awaiting Auth....</span>
+                <br />
+              </span>
+            </div>
+          </div>
+          <div class="controller-container09">
 
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </body>
-<script src="JS/controller.js" ></script>
+<script src="JS/controller.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/obs-websocket-js"></script>
 <script src="JS/OBS.js"></script>
+
 </html>
