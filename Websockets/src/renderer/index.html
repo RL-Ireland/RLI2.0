@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RL to SOS Converter</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="header">
+        <div>
+          <h1>RL to SOS Converter</h1>
+          <p>Rocket League Stats API TCP input to SOS-compatible WebSocket output.</p>
+        </div>
+      </header>
+
+      <section class="status-grid">
+        <article class="status-panel">
+          <span class="label">Rocket League API</span>
+          <strong id="rlStatus">idle</strong>
+          <small>127.0.0.1:49123</small>
+        </article>
+        <article class="status-panel">
+          <span class="label">SOS WebSocket</span>
+          <strong id="wsStatus">idle</strong>
+          <small>ws://0.0.0.0:49122</small>
+        </article>
+        <article class="status-panel">
+          <span class="label">Overlay clients</span>
+          <strong id="clientCount">0</strong>
+          <small>Connected consumers</small>
+        </article>
+      </section>
+
+      <section class="logs">
+        <div class="section-title">Logs</div>
+        <div id="logs" class="log-list"></div>
+      </section>
+    </main>
+    <script src="./renderer.js"></script>
+  </body>
+</html>

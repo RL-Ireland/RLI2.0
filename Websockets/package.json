@@ -1,0 +1,85 @@
+{
+  "name": "bakkes-rl-converter",
+  "version": "1.0.2",
+  "description": "Rocket League Stats API to SOS/BakkesMod WebSocket converter.",
+  "main": "dist/src/main/electronMain.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron .",
+    "test": "npm run build && node dist/test/mapper.test.js",
+    "dist": "npm run build && set CSC_IDENTITY_AUTO_DISCOVERY=false&& electron-builder --win",
+    "dist:dir": "npm run build && set CSC_IDENTITY_AUTO_DISCOVERY=false&& electron-builder --win --dir"
+  },
+  "keywords": [
+    "rocket-league",
+    "sos",
+    "bakkesmod",
+    "overlay",
+    "websocket",
+    "electron"
+  ],
+  "author": "PollieDev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PollieDev/sos-rl-converter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PollieDev/sos-rl-converter/issues"
+  },
+  "homepage": "https://github.com/PollieDev/sos-rl-converter#readme",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.15.0",
+    "npm": ">=11.13.0"
+  },
+  "build": {
+    "appId": "com.bakkesrl.converter",
+    "productName": "RL to SOS Converter",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/src/**/*",
+      "src/renderer/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "afterPack": "build/afterPack.mjs",
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "dependencies": {
+    "ws": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/ws": "^8.18.1",
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1",
+    "rcedit": "^5.0.2",
+    "typescript": "^6.0.3"
+  }
+}

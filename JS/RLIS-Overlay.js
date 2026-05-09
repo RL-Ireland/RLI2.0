@@ -433,18 +433,12 @@ $(() => {
 
     WsSubscribers2.subscribe("Games", "Info", (e) => {
         autoNames = false;
-        blueName.innerHTML = e[0]['values'][2][1].toUpperCase();
-        orangeName.innerHTML = e[0]['values'][2][3].toUpperCase();
+        blueName.innerHTML = e['currentSeries']['teamA']['name'].toUpperCase();
+        orangeName.innerHTML = e['currentSeries']['teamB']['name'].toUpperCase();
         $('#blueTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
         $('#orangeTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
-
-        Object.keys(e[1]['values']).forEach((id) => {
-            if (e[1]['values'][id][0] == e[0]['values'][2][1]) {
-                blueImg.src = e[1]['values'][id][1];
-            } else if (e[1]['values'][id][0] == e[0]['values'][2][3]) {
-                orangeImg.src = e[1]['values'][id][1];
-            }
-        });
+        blueImg.src = e['currentSeries']['teamA']['logo'];
+        orangeImg.src = e['currentSeries']['teamB']['logo'];
     });
 
 });

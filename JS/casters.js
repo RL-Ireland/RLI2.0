@@ -4,59 +4,85 @@
 
 
 $(() => {
-	WsSubscribers.init(49322, true)
+    WsSubscribers.init(49322, true);
     WsSubscribers.subscribe("Games", "Info", (e) => {
-        currentSeries.style.visibility = e[0]['values'][3][5];
-        nextSeries1.style.visibility = e[0]['values'][7][5];
-        nextSeries2.style.visibility = e[0]['values'][10][5];
-        nextSeries3.style.visibility = e[0]['values'][13][5];
-        headlineText.innerHTML = e[0]['values'][16][1].toUpperCase();
-        scrollText.innerHTML = " " + e[0]['values'][17][1].toUpperCase() + "        ";
-        scrollText1.innerHTML = " " + e[0]['values'][18][1].toUpperCase() + "       ";
-        scrollText2.innerHTML = " " + e[0]['values'][19][1].toUpperCase() + "       ";
-        scrollText3.innerHTML = " " + e[0]['values'][20][1].toUpperCase() + "       ";
-        currentBo.innerHTML = e[0]['values'][3][4].toUpperCase();
-        firstBo.innerHTML = e[0]['values'][7][4].toUpperCase();
-        secondBo.innerHTML = e[0]['values'][10][4].toUpperCase();
-        thirdBo.innerHTML = e[0]['values'][13][4].toUpperCase();
-        firstSeries.innerHTML = e[0]['values'][7][0].toUpperCase();
-        secondSeries.innerHTML = e[0]['values'][10][0].toUpperCase();
-        thirdSeries.innerHTML = e[0]['values'][13][0].toUpperCase();
-        currentBlueName.innerHTML = e[0]['values'][2][1].toUpperCase();
-        currentOrangeName.innerHTML = e[0]['values'][2][3].toUpperCase();
-        nextBlueName.innerHTML = e[0]['values'][6][1].toUpperCase();
-        nextOrangeName.innerHTML = e[0]['values'][6][3].toUpperCase();
-        nextBlueName2.innerHTML = e[0]['values'][9][1].toUpperCase();
-        nextOrangeName2.innerHTML = e[0]['values'][9][3].toUpperCase();
-        nextBlueName3.innerHTML = e[0]['values'][12][1].toUpperCase();
-        nextOrangeName3.innerHTML = e[0]['values'][12][3].toUpperCase();
-        firstScore.innerHTML = e[0]['values'][7][1] + "-" + e[0]['values'][7][3];
-        secondScore.innerHTML = e[0]['values'][10][1] + "-" + e[0]['values'][10][3];
-        thirdScore.innerHTML = e[0]['values'][13][1] + "-" + e[0]['values'][13][3];
-        if(e[0]['values'][7][1] != 0 || e[0]['values'][7][3] != 0){
+
+        headlineText.innerHTML = e['headline'].toUpperCase();
+        scrollText.innerHTML = " " + e['scrollTexts'][0].toUpperCase() + "        ";
+        scrollText1.innerHTML = " " + e['scrollTexts'][1].toUpperCase() + "       ";
+        scrollText2.innerHTML = " " + e['scrollTexts'][2].toUpperCase() + "       ";
+        scrollText3.innerHTML = " " + e['scrollTexts'][3].toUpperCase() + "       ";
+
+        currentBo.innerHTML = e['currentSeries']['format'].toUpperCase();
+        firstBo.innerHTML = e['otherSeries'][0]['format'].toUpperCase();
+        secondBo.innerHTML = e['otherSeries'][1]['format'].toUpperCase();
+        thirdBo.innerHTML = e['otherSeries'][2]['format'].toUpperCase();
+
+        firstSeries.innerHTML = e['otherSeries'][0]['name'].toUpperCase();
+        secondSeries.innerHTML = e['otherSeries'][1]['name'].toUpperCase();
+        thirdSeries.innerHTML = e['otherSeries'][2]['name'].toUpperCase();
+
+        currentBlueName.innerHTML = e['currentSeries']['teamA']['name'].toUpperCase();
+        currentOrangeName.innerHTML = e['currentSeries']['teamB']['name'].toUpperCase();
+
+        nextBlueName.innerHTML = e['otherSeries'][0]['teamA']['name'].toUpperCase();
+        nextOrangeName.innerHTML = e['otherSeries'][0]['teamB']['name'].toUpperCase();
+
+        nextBlueName2.innerHTML = e['otherSeries'][1]['teamA']['name'].toUpperCase();
+        nextOrangeName2.innerHTML = e['otherSeries'][1]['teamB']['name'].toUpperCase();
+
+        nextBlueName3.innerHTML = e['otherSeries'][2]['teamA']['name'].toUpperCase();
+        nextOrangeName3.innerHTML = e['otherSeries'][2]['teamB']['name'].toUpperCase();
+
+        firstScore.innerHTML = e['otherSeries'][0]['scoreA'] + "-" + e['otherSeries'][0]['scoreB'];
+        secondScore.innerHTML = e['otherSeries'][1]['scoreA'] + "-" + e['otherSeries'][1]['scoreB'];
+        thirdScore.innerHTML = e['otherSeries'][2]['scoreA'] + "-" + e['otherSeries'][2]['scoreB'];
+
+        /*if (e[0]['values'][7][1] != 0 || e[0]['values'][7][3] != 0) {
             firstScoreArea.style.visibility = "visible";
-        }else{
+        } else {
             firstScoreArea.style.visibility = "hidden";
         }
-        if(e[0]['values'][10][1] != 0 || e[0]['values'][10][3] != 0){
+        if (e[0]['values'][10][1] != 0 || e[0]['values'][10][3] != 0) {
             secondScoreArea.style.visibility = "visible";
-        }else{
+        } else {
             secondScoreArea.style.visibility = "hidden";
         }
-        if(e[0]['values'][13][1] != 0 || e[0]['values'][13][3] != 0){
+        if (e[0]['values'][13][1] != 0 || e[0]['values'][13][3] != 0) {
             thirdScoreArea.style.visibility = "visible";
-        }else{
+        } else {
             thirdScoreArea.style.visibility = "hidden";
-        }
-        if(e[0]['values'][7][5] == "hidden"){
+        }*/
+        /*if (e['otherSeries'][0]['visibility'] == "hidden") {
             firstScoreArea.style.visibility = "hidden";
+            firstScore.style.visibility = "hidden";
         }
-        if(e[0]['values'][10][5] == "hidden"){
+        else {
+            firstScoreArea.style.visibility = "visible";
+            firstScore.style.visibility = "visible";
+        }
+        if (e['otherSeries'][1]['visibility'] == "hidden") {
             secondScoreArea.style.visibility = "hidden";
+            secondScore.style.visibility = "hidden";
         }
-        if(e[0]['values'][13][5] == "hidden"){
+        else {
+            secondScoreArea.style.visibility = "visible";
+            secondScore.style.visibility = "visible";
+        }
+        if (e['otherSeries'][2]['visibility'] == "hidden") {
             thirdScoreArea.style.visibility = "hidden";
+            thirdScore.style.visibility = "hidden";
         }
+        else {
+            thirdScoreArea.style.visibility = "visible";
+            thirdScore.style.visibility = "visible";
+        }*/
+
+        currentSeries.style.visibility = e['currentSeries']['visibility'];
+        nextSeries1.style.visibility = e['otherSeries'][0]['visibility'];
+        nextSeries2.style.visibility = e['otherSeries'][1]['visibility'];
+        nextSeries3.style.visibility = e['otherSeries'][2]['visibility'];
+
         $('#headlineText').textfill({ maxFontPixels: 25, widthOnly: true });
         $('#scrollText').textfill({ maxFontPixels: 25, widthOnly: true });
         $('#scrollText1').textfill({ maxFontPixels: 25, widthOnly: true });
@@ -71,42 +97,24 @@ $(() => {
         $('#nextBlueName3').textfill({ maxFontPixels: 10, widthOnly: true });
         $('#nextOrangeName3').textfill({ maxFontPixels: 10, widthOnly: true });
 
-        Object.keys(e[1]['values']).forEach((id) => {
-          if(e[1]['values'][id][0] == e[0]['values'][2][1]){
-              currentBlue.src = e[1]['values'][id][1];
-          }
-          if(e[1]['values'][id][0] == e[0]['values'][2][3]){
-              currentOrange.src = e[1]['values'][id][1];
-          }
-          if(e[1]['values'][id][0] == e[0]['values'][6][1]){
-              nextBlue.src = e[1]['values'][id][1];
-          }
-          if(e[1]['values'][id][0] == e[0]['values'][6][3]){
-              nextOrange.src = e[1]['values'][id][1];
-          }
-          if(e[1]['values'][id][0] == e[0]['values'][9][1]){
-              nextBlue2.src = e[1]['values'][id][1];
-          }
-          if(e[1]['values'][id][0] == e[0]['values'][9][3]){
-              nextOrange2.src = e[1]['values'][id][1];
-          }
-          if(e[1]['values'][id][0] == e[0]['values'][12][1]){
-              nextBlue3.src = e[1]['values'][id][1];
-          }
-          if(e[1]['values'][id][0] == e[0]['values'][12][3]){
-              nextOrange3.src = e[1]['values'][id][1];
-          }
-         });
+        currentBlue.src = e['currentSeries']['teamA']['logo'];
+        currentOrange.src = e['currentSeries']['teamB']['logo'];
+        nextBlue.src = e['otherSeries'][0]['teamA']['logo'];
+        nextOrange.src = e['otherSeries'][0]['teamB']['logo'];
+        nextBlue2.src = e['otherSeries'][1]['teamA']['logo'];
+        nextOrange2.src = e['otherSeries'][1]['teamB']['logo'];
+        nextBlue3.src = e['otherSeries'][2]['teamA']['logo'];
+        nextOrange3.src = e['otherSeries'][2]['teamB']['logo'];
     });
 });
 
-var intervalId = window.setInterval(function(){
-  var oldDate = new Date();
-  var temp;
-  if (oldDate.getMinutes() < 10){
-    var newDate = oldDate.getHours() + ":0" + oldDate.getMinutes();
-  }else{
-    var newDate = oldDate.getHours() + ":" + oldDate.getMinutes();
-  }
-  time.innerHTML = newDate;
+var intervalId = window.setInterval(function () {
+    var oldDate = new Date();
+    var temp;
+    if (oldDate.getMinutes() < 10) {
+        var newDate = oldDate.getHours() + ":0" + oldDate.getMinutes();
+    } else {
+        var newDate = oldDate.getHours() + ":" + oldDate.getMinutes();
+    }
+    time.innerHTML = newDate;
 }, 500);

@@ -34,7 +34,9 @@ var Orange3 = document.getElementById('orangeG3');
 var Orange4 = document.getElementById('orangeG4');
 var Orange5 = document.getElementById('orangeG5');
 
-WsSubscribers.init(49122, true);
+wait(10000).then(() => {
+    WsSubscribers.init(49122, true);
+});
 $(() => {
     WsSubscribers.subscribe("game", "update_state", (d) => {
         var blueTeamName = d['game']['teams'][0]['name'];
@@ -196,46 +198,12 @@ $(() => {
 });
 
 $('#update').click(function () {
-    CLIENT_ID = document.getElementById("CLIENT_ID").value.toString();
-    API_KEY = document.getElementById("API_KEY").value.toString();
-    $.getScript("https://apis.google.com/js/api.js").done(gapiLoaded());
-    try {
-        gapi.client.sheets.spreadsheets.values.batchGet({
-            spreadsheetId: '1rlAD9wBOE66gT25VCg5u355tOIzfxkJYT4Oc51X7Dho',
-            ranges: [
-                "games",
-                "teams"
-            ],
-            valueRenderOption: "FORMATTED_VALUE"
-        }).then((response) => {
-            document.getElementById('googleAuthText').innerHTML = ("Text Updated");
-            const result = response.result.valueRanges;
-            const numRows = result.values ? result.values.length : 0;
-            console.log(result);
-            WsSubscribers2.send("Games", "Info", result);
-            // result[0]['values'] = the index for games sheet vales
-            //result[1]['values'] = the index for teams sheet vales
-            blueName.innerHTML = result[0]['values'][2][1].toUpperCase();
-            orangeName.innerHTML = result[0]['values'][2][3].toUpperCase();
-            $('#blueTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
-            $('#orangeTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
-
-            Object.keys(result[1]['values']).forEach((id) => {
-                if (result[1]['values'][id][0] == result[0]['values'][2][1]) {
-                    blueImg.src = result[1]['values'][id][1];
-                } else if (result[1]['values'][id][0] == result[0]['values'][2][3]) {
-                    orangeImg.src = result[1]['values'][id][1];
-                }
-            });
-        });
-    } catch (err) {
-        console.log(err.message);
-        return;
-    }
+    callUpdate()
 });
 
-
-WsSubscribers2.init(49322, true);
+wait(10000).then(() => {
+    WsSubscribers2.init(49322, true);
+});
 $(".controller-container .controller-general-info .controller-tourney-abbrv-area .controller-button").click(function () {
     var i = document.getElementById("tourneyAbbrv").value.toUpperCase();
     $(".controller-container .rlis-overlay-tourney-area .rlis-overlay-tourney-top .rlis-overlay-tourney-info-area .rlis-overlay-tourney-text").text(i);
@@ -416,26 +384,24 @@ $('#autoNames').click(function () {
 
 $('#startAuto').click(function () {
     autoUpdate = true;
+    document.getElementById('googleAuthText').innerHTML = ("Auto Update Enabled");
 });
 
 $('#stopAuto').click(function () {
     autoUpdate = false;
+    document.getElementById('googleAuthText').innerHTML = ("Auto Update Stopped");
 });
 
 $('#sheetNames').click(function () {
     if ($('#sheetNames').prop('checked') == true) {
         autoNames = false;
         document.getElementById('update').style.visibility = 'visible';
-        document.getElementById('API_KEY').style.visibility = 'visible';
-        document.getElementById('CLIENT_ID').style.visibility = 'visible';
         document.getElementById('startAuto').style.visibility = 'visible';
         document.getElementById('stopAuto').style.visibility = 'visible';
         document.getElementById('googleAuthText').style.visibility = 'visible';
     } else {
         autoNames = true;
         document.getElementById('update').style.visibility = 'hidden';
-        document.getElementById('API_KEY').style.visibility = 'hidden';
-        document.getElementById('CLIENT_ID').style.visibility = 'hidden';
         document.getElementById('startAuto').style.visibility = 'hidden';
         document.getElementById('stopAuto').style.visibility = 'hidden';
         document.getElementById('googleAuthText').style.visibility = 'hidden';
@@ -592,82 +558,41 @@ function checkIfSeriesEnded() {
 
 var autoRun = window.setInterval(function () {
     if (autoUpdate == true) {
+        let i = 1;
+        WsSubscribers2.send("Data", "request", i);
+        WsSubscribers2.subscribe("Data", "receive", (d) => {
 
-        CLIENT_ID = document.getElementById("CLIENT_ID").value.toString();
-        API_KEY = document.getElementById("API_KEY").value.toString();
-        $.getScript("https://apis.google.com/js/api.js").done(gapiLoaded());
-        try {
-            gapi.client.sheets.spreadsheets.values.batchGet({
-                spreadsheetId: '1rlAD9wBOE66gT25VCg5u355tOIzfxkJYT4Oc51X7Dho',
-                ranges: [
-                    "games",
-                    "teams"
-                ],
-                valueRenderOption: "FORMATTED_VALUE"
-            }).then((response) => {
-                document.getElementById('googleAuthText').innerHTML = ("Auto Update Enabled");
-                const result = response.result.valueRanges;
-                const numRows = result.values ? result.values.length : 0;
-                console.log(result);
-                WsSubscribers2.send("Games", "Info", result);
-                //result[0]['values'] = the index for games sheet vales
-                //result[1]['values'] = the index for teams sheet vales
-                blueName.innerHTML = result[0]['values'][2][1].toUpperCase();
-                orangeName.innerHTML = result[0]['values'][2][3].toUpperCase();
-                $('#blueTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
-                $('#orangeTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
+            console.log(d);
 
-                Object.keys(result[1]['values']).forEach((id) => {
-                    if (result[1]['values'][id][0] == result[0]['values'][2][1]) {
-                        blueImg.src = result[1]['values'][id][1];
-                    } else if (result[1]['values'][id][0] == result[0]['values'][2][3]) {
-                        orangeImg.src = result[1]['values'][id][1];
-                    }
-                });
-            });
-        } catch (err) {
-            console.log(err.message);
-            return;
-        }
-
+            document.getElementById('googleAuthText').innerHTML = ("Auto Update Enabled");
+            const result = d;
+            WsSubscribers2.send("Games", "Info", result);
+            blueName.innerHTML = result['currentSeries']['teamA']['name'].toUpperCase();
+            orangeName.innerHTML = result['currentSeries']['teamB']['name'].toUpperCase();
+            $('#blueTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
+            $('#orangeTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
+            blueImg.src = result['currentSeries']['teamA']['logo'];
+            orangeImg.src = result['currentSeries']['teamB']['logo'];
+        });
     }
 }, 30000);
 
 function callUpdate() {
-    CLIENT_ID = document.getElementById("CLIENT_ID").value.toString();
-    API_KEY = document.getElementById("API_KEY").value.toString();
-    $.getScript("https://apis.google.com/js/api.js").done(gapiLoaded());
-    try {
-        gapi.client.sheets.spreadsheets.values.batchGet({
-            spreadsheetId: '1rlAD9wBOE66gT25VCg5u355tOIzfxkJYT4Oc51X7Dho',
-            ranges: [
-                "games",
-                "teams"
-            ],
-            valueRenderOption: "FORMATTED_VALUE"
-        }).then((response) => {
-            document.getElementById('googleAuthText').innerHTML = ("Auto Update Enabled");
-            const result = response.result.valueRanges;
-            const numRows = result.values ? result.values.length : 0;
-            console.log(result);
-            WsSubscribers2.send("Games", "Info", result);
-            //result[0]['values'] = the index for games sheet vales
-            //result[1]['values'] = the index for teams sheet vales
-            blueName.innerHTML = result[0]['values'][2][1].toUpperCase();
-            orangeName.innerHTML = result[0]['values'][2][3].toUpperCase();
-            $('#blueTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
-            $('#orangeTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
 
-            Object.keys(result[1]['values']).forEach((id) => {
-                if (result[1]['values'][id][0] == result[0]['values'][2][1]) {
-                    blueImg.src = result[1]['values'][id][1];
-                } else if (result[1]['values'][id][0] == result[0]['values'][2][3]) {
-                    orangeImg.src = result[1]['values'][id][1];
-                }
-            });
-        });
-    } catch (err) {
-        console.log(err.message);
-        return;
-    }
+    let i = 1;
+    WsSubscribers2.send("Data", "request", i);
+    WsSubscribers2.subscribe("Data", "receive", (d) => {
+
+        console.log(d);
+
+        document.getElementById('googleAuthText').innerHTML = ("Auto Update Enabled");
+        const result = d;
+        WsSubscribers2.send("Games", "Info", result);
+        blueName.innerHTML = result['currentSeries']['teamA']['name'].toUpperCase();
+        orangeName.innerHTML = result['currentSeries']['teamB']['name'].toUpperCase();
+        $('#blueTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
+        $('#orangeTeamNameArea').textfill({ maxFontPixels: 25, widthOnly: true });
+        blueImg.src = result['currentSeries']['teamA']['logo'];
+        orangeImg.src = result['currentSeries']['teamB']['logo'];
+    });
 }

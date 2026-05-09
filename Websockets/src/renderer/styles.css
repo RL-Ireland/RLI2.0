@@ -1,0 +1,116 @@
+:root {
+  color-scheme: dark;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #101114;
+  color: #f3f5f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #101114;
+}
+
+.shell {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 0;
+  color: #a8b0bb;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.status-panel,
+.logs {
+  border: 1px solid #2a2f36;
+  background: #171a20;
+  border-radius: 8px;
+}
+
+.status-panel {
+  padding: 18px;
+  min-height: 120px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  color: #a8b0bb;
+  font-size: 13px;
+}
+
+strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+small {
+  display: block;
+  margin-top: 16px;
+  color: #7f8996;
+}
+
+.logs {
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.section-title {
+  padding: 14px 18px;
+  border-bottom: 1px solid #2a2f36;
+  color: #a8b0bb;
+  font-size: 13px;
+}
+
+.log-list {
+  min-height: 220px;
+  max-height: 280px;
+  margin: 0;
+  padding: 12px 18px 18px;
+  overflow: auto;
+}
+
+.log-entry {
+  padding: 4px 0;
+  color: #d7dce2;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    padding: 20px;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}

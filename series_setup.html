@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broadcast Overlay Control Panel</title>
+    <link rel="stylesheet" href="CSS\series_setup.css">
+    <script src="JS/rl-websocket.js"></script>
+    <script src="JS/tempWS.js"></script>
+</head>
+
+<body>
+    <div id="broadcast-main-container">
+        <!-- Top Bar / Header -->
+        <header id="top-header-bar">
+            <div id="header-title">BROADCAST OVERLAY CONTROL</div>
+            <div id="header-status-indicator">
+                <span id="header-status-dot"></span>
+                <span id="header-status-text">Live Preview</span>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div id="main-content-wrapper">
+
+            <!-- ============ CURRENT SERIES SECTION ============ -->
+            <section id="current-series-section">
+                <div id="current-series-section-header">
+                    <span id="current-series-section-icon">●</span>
+                    <h2 id="current-series-section-title">Current Series</h2>
+                    <span id="current-series-badge">LIVE</span>
+                </div>
+                <div id="current-series-card">
+                    <!-- Series Name Row -->
+                    <div id="current-series-name-row">
+                        <label id="current-series-name-label" for="current-series-name-input">Series:</label>
+                        <input type="text" id="current-series-name-input" class="series-name-textfield" value="Group Stage"
+                            maxlength="30">
+                    </div>
+                    <!-- Teams and Score Row -->
+                    <div id="current-series-matchup-row">
+                        <!-- Team A (Left) -->
+                        <div class="team-block" id="current-team-a-block">
+                            <div class="team-logo-area" id="current-team-a-logo-area">
+                                <img id="current-team-a-logo-img" class="team-logo-img" src="" alt="Logo A"
+                                    style="display: none;">
+                                <label for="current-team-a-logo-input" class="team-logo-label"
+                                    id="current-team-a-logo-label">+</label>
+                                <input type="file" id="current-team-a-logo-input" class="team-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                            <input type="text" id="current-series-team-a-input"
+                                class="team-name-textfield tbd-textfield" value="TBD" maxlength="25">
+                            <span class="team-underline" id="current-team-a-underline"></span>
+                        </div>
+                        <!-- VS Divider -->
+                        <div id="current-series-vs-divider">
+                            <span id="current-series-vs-text">VS</span>
+                        </div>
+                        <!-- Team B (Right) -->
+                        <div class="team-block" id="current-team-b-block">
+                            <div class="team-logo-area" id="current-team-b-logo-area">
+                                <img id="current-team-b-logo-img" class="team-logo-img" src="" alt="Logo B"
+                                    style="display: none;">
+                                <label for="current-team-b-logo-input" class="team-logo-label"
+                                    id="current-team-b-logo-label">+</label>
+                                <input type="file" id="current-team-b-logo-input" class="team-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                            <input type="text" id="current-series-team-b-input"
+                                class="team-name-textfield tbd-textfield" value="TBD" maxlength="25">
+                            <span class="team-underline" id="current-team-b-underline"></span>
+                        </div>
+                    </div>
+                    <!-- Score and Format Row -->
+                    <div id="current-series-details-row">
+                        <div id="current-series-score-group">
+                            <span id="current-series-score-a-value" class="score-value">0</span>
+                            <span id="current-series-score-separator">-</span>
+                            <span id="current-series-score-b-value" class="score-value">0</span>
+                        </div>
+                        <div id="current-series-format-group">
+                            <span id="current-series-format-label">Format:</span>
+                            <select id="current-series-format-select" class="format-select">
+                                <option value="Show Match">Show Match</option>
+                                <option value="Bo3">Bo3</option>
+                                <option value="Bo5">Bo5</option>
+                                <option value="Bo7" selected>Bo7</option>
+                                <option value="Bo9">Bo9</option>
+                            </select>
+                        </div>
+                        <div id="current-series-visibility-group">
+                            <span id="current-series-visibility-dot" class="visibility-dot-visible"></span>
+                            <input type="text" id="current-series-visibility-input"
+                                class="visibility-textfield visibility-visible" value="Visible" maxlength="10" readonly>
+                            <button type="button" id="current-series-visibility-toggle" class="visibility-toggle-btn"
+                                title="Toggle visibility">⇄</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="shift-series-control">
+                    <button type="button" id="shift-series-btn" title="Rotate series upward (3→2→1→Current→3)">
+                        🔄 Shift Series
+                    </button>
+                </div>
+            </section>
+
+            <!-- ============ OTHER SERIES SECTION ============ -->
+            <section id="other-series-section">
+                <div id="other-series-section-header">
+                    <span id="other-series-section-icon">◆</span>
+                    <h2 id="other-series-section-title">Other Series</h2>
+                </div>
+                <div id="other-series-cards-container">
+                    <!-- Other Series Card 1 -->
+                    <div class="other-series-card" id="other-series-card-1">
+                        <div class="other-series-card-header">
+                            <input type="text" id="other-series-1-name-input"
+                                class="series-name-textfield other-series-name" value="Group Stage" maxlength="25">
+                            <span class="other-series-visibility-dot visibility-dot-hidden"
+                                id="other-series-1-vis-dot"></span>
+                            <input type="text" id="other-series-1-visibility-input"
+                                class="visibility-textfield visibility-hidden" value="Hidden" maxlength="10" readonly>
+                            <button type="button" class="visibility-toggle-btn other-vis-toggle"
+                                id="other-series-1-vis-toggle" title="Toggle visibility">⇄</button>
+                        </div>
+                        <div class="other-series-matchup-row">
+                            <div class="other-team-logo-area" id="other-series-1-team-a-logo-area">
+                                <img id="other-series-1-team-a-logo-img" class="other-team-logo-img" src="" alt="Logo A"
+                                    style="display: none;">
+                                <label for="other-series-1-team-a-logo-input" class="other-logo-label">+</label>
+                                <input type="file" id="other-series-1-team-a-logo-input" class="other-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                            <input type="text" id="other-series-1-team-a-input"
+                                class="team-name-textfield tbd-textfield other-team-input" value="TBD" maxlength="20">
+                            <span class="other-series-vs">vs</span>
+                            <input type="text" id="other-series-1-team-b-input"
+                                class="team-name-textfield tbd-textfield other-team-input" value="TBD" maxlength="20">
+                            <div class="other-team-logo-area" id="other-series-1-team-b-logo-area">
+                                <img id="other-series-1-team-b-logo-img" class="other-team-logo-img" src="" alt="Logo B"
+                                    style="display: none;">
+                                <label for="other-series-1-team-b-logo-input" class="other-logo-label">+</label>
+                                <input type="file" id="other-series-1-team-b-logo-input" class="other-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                        </div>
+                        <div class="other-series-details-row">
+                            <div class="other-series-score-group">
+                                <span id="other-series-1-score-a-value" class="score-value">0</span>
+                                <span class="other-score-sep">-</span>
+                                <span id="other-series-1-score-b-value" class="score-value">0</span>
+                            </div>
+                            <select id="other-series-1-format-select" class="format-select other-format-select">
+                                <option value="Show Match">Show Match</option>
+                                <option value="Bo3">Bo3</option>
+                                <option value="Bo5">Bo5</option>
+                                <option value="Bo7" selected>Bo7</option>
+                                <option value="Bo9">Bo9</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Other Series Card 2 -->
+                    <div class="other-series-card" id="other-series-card-2">
+                        <div class="other-series-card-header">
+                            <input type="text" id="other-series-2-name-input"
+                                class="series-name-textfield other-series-name" value="Group Stage" maxlength="25">
+                            <span class="other-series-visibility-dot visibility-dot-hidden"
+                                id="other-series-2-vis-dot"></span>
+                            <input type="text" id="other-series-2-visibility-input"
+                                class="visibility-textfield visibility-hidden" value="Hidden" maxlength="10" readonly>
+                            <button type="button" class="visibility-toggle-btn other-vis-toggle"
+                                id="other-series-2-vis-toggle" title="Toggle visibility">⇄</button>
+                        </div>
+                        <div class="other-series-matchup-row">
+                            <div class="other-team-logo-area" id="other-series-2-team-a-logo-area">
+                                <img id="other-series-2-team-a-logo-img" class="other-team-logo-img" src="" alt="Logo A"
+                                    style="display: none;">
+                                <label for="other-series-2-team-a-logo-input" class="other-logo-label">+</label>
+                                <input type="file" id="other-series-2-team-a-logo-input" class="other-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                            <input type="text" id="other-series-2-team-a-input"
+                                class="team-name-textfield tbd-textfield other-team-input" value="TBD" maxlength="20">
+                            <span class="other-series-vs">vs</span>
+                            <input type="text" id="other-series-2-team-b-input"
+                                class="team-name-textfield tbd-textfield other-team-input" value="TBD" maxlength="20">
+                            <div class="other-team-logo-area" id="other-series-2-team-b-logo-area">
+                                <img id="other-series-2-team-b-logo-img" class="other-team-logo-img" src="" alt="Logo B"
+                                    style="display: none;">
+                                <label for="other-series-2-team-b-logo-input" class="other-logo-label">+</label>
+                                <input type="file" id="other-series-2-team-b-logo-input" class="other-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                        </div>
+                        <div class="other-series-details-row">
+                            <div class="other-series-score-group">
+                                <span id="other-series-2-score-a-value" class="score-value">0</span>
+                                <span class="other-score-sep">-</span>
+                                <span id="other-series-2-score-b-value" class="score-value">0</span>
+                            </div>
+                            <select id="other-series-2-format-select" class="format-select other-format-select">
+                                <option value="Show Match">Show Match</option>
+                                <option value="Bo3">Bo3</option>
+                                <option value="Bo5">Bo5</option>
+                                <option value="Bo7" selected>Bo7</option>
+                                <option value="Bo9">Bo9</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Other Series Card 3 -->
+                    <div class="other-series-card" id="other-series-card-3">
+                        <div class="other-series-card-header">
+                            <input type="text" id="other-series-3-name-input"
+                                class="series-name-textfield other-series-name" value="Group Stage" maxlength="25">
+                            <span class="other-series-visibility-dot visibility-dot-hidden"
+                                id="other-series-3-vis-dot"></span>
+                            <input type="text" id="other-series-3-visibility-input"
+                                class="visibility-textfield visibility-hidden" value="Hidden" maxlength="10" readonly>
+                            <button type="button" class="visibility-toggle-btn other-vis-toggle"
+                                id="other-series-3-vis-toggle" title="Toggle visibility">⇄</button>
+                        </div>
+                        <div class="other-series-matchup-row">
+                            <div class="other-team-logo-area" id="other-series-3-team-a-logo-area">
+                                <img id="other-series-3-team-a-logo-img" class="other-team-logo-img" src="" alt="Logo A"
+                                    style="display: none;">
+                                <label for="other-series-3-team-a-logo-input" class="other-logo-label">+</label>
+                                <input type="file" id="other-series-3-team-a-logo-input" class="other-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                            <input type="text" id="other-series-3-team-a-input"
+                                class="team-name-textfield tbd-textfield other-team-input" value="TBD" maxlength="20">
+                            <span class="other-series-vs">vs</span>
+                            <input type="text" id="other-series-3-team-b-input"
+                                class="team-name-textfield tbd-textfield other-team-input" value="TBD" maxlength="20">
+                            <div class="other-team-logo-area" id="other-series-3-team-b-logo-area">
+                                <img id="other-series-3-team-b-logo-img" class="other-team-logo-img" src="" alt="Logo B"
+                                    style="display: none;">
+                                <label for="other-series-3-team-b-logo-input" class="other-logo-label">+</label>
+                                <input type="file" id="other-series-3-team-b-logo-input" class="other-logo-file-input"
+                                    accept="image/*">
+                            </div>
+                        </div>
+                        <div class="other-series-details-row">
+                            <div class="other-series-score-group">
+                                <span id="other-series-3-score-a-value" class="score-value">0</span>
+                                <span class="other-score-sep">-</span>
+                                <span id="other-series-3-score-b-value" class="score-value">0</span>
+                            </div>
+                            <select id="other-series-3-format-select" class="format-select other-format-select">
+                                <option value="Show Match">Show Match</option>
+                                <option value="Bo3">Bo3</option>
+                                <option value="Bo5">Bo5</option>
+                                <option value="Bo7" selected>Bo7</option>
+                                <option value="Bo9">Bo9</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ HEADLINE SECTION ============ -->
+            <section id="headline-section">
+                <div id="headline-section-header">
+                    <span id="headline-section-icon">📰</span>
+                    <h2 id="headline-section-title">New Headline</h2>
+                </div>
+                <div id="headline-input-group">
+                    <label id="headline-input-label" for="headline-text-input">Headline Text:</label>
+                    <input type="text" id="headline-text-input" class="headline-textfield" value="RL Ireland 2026"
+                        maxlength="60" placeholder="Enter headline...">
+                    <span id="headline-preview-badge">Preview</span>
+                </div>
+            </section>
+
+            <!-- ============ SCROLL TEXT SECTION ============ -->
+            <section id="scroll-text-section">
+                <div id="scroll-text-section-header">
+                    <span id="scroll-text-section-icon">📜</span>
+                    <h2 id="scroll-text-section-title">Scroll Text</h2>
+                    <span id="scroll-text-count-badge">4 Items</span>
+                </div>
+                <div id="scroll-text-list">
+                    <div class="scroll-text-row" id="scroll-text-row-1">
+                        <span class="scroll-text-index" id="scroll-text-index-1">01</span>
+                        <span class="scroll-text-pipe-icon">|</span>
+                        <input type="text" id="scroll-text-input-1" class="scroll-text-textfield" value="HI MOM!"
+                            maxlength="80" placeholder="Enter scroll text...">
+                        <span class="scroll-text-trailing-pipe">|</span>
+                        <button type="button" class="scroll-text-clear-btn" id="scroll-text-clear-1"
+                            title="Clear text">✕</button>
+                    </div>
+                    <div class="scroll-text-row" id="scroll-text-row-2">
+                        <span class="scroll-text-index" id="scroll-text-index-2">02</span>
+                        <span class="scroll-text-pipe-icon">|</span>
+                        <input type="text" id="scroll-text-input-2" class="scroll-text-textfield"
+                            value="Predictions in chat!" maxlength="80" placeholder="Enter scroll text...">
+                        <span class="scroll-text-trailing-pipe">|</span>
+                        <button type="button" class="scroll-text-clear-btn" id="scroll-text-clear-2"
+                            title="Clear text">✕</button>
+                    </div>
+                    <div class="scroll-text-row" id="scroll-text-row-3">
+                        <span class="scroll-text-index" id="scroll-text-index-3">03</span>
+                        <span class="scroll-text-pipe-icon">|</span>
+                        <input type="text" id="scroll-text-input-3" class="scroll-text-textfield" value="We love jarf!"
+                            maxlength="80" placeholder="Enter scroll text...">
+                        <span class="scroll-text-trailing-pipe">|</span>
+                        <button type="button" class="scroll-text-clear-btn" id="scroll-text-clear-3"
+                            title="Clear text">✕</button>
+                    </div>
+                    <div class="scroll-text-row" id="scroll-text-row-4">
+                        <span class="scroll-text-index" id="scroll-text-index-4">04</span>
+                        <span class="scroll-text-pipe-icon">|</span>
+                        <input type="text" id="scroll-text-input-4" class="scroll-text-textfield"
+                            value="DLYNCH = BOTTLER" maxlength="80" placeholder="Enter scroll text...">
+                        <span class="scroll-text-trailing-pipe">|</span>
+                        <button type="button" class="scroll-text-clear-btn" id="scroll-text-clear-4"
+                            title="Clear text">✕</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer id="bottom-footer-bar">
+            <span id="footer-resolution">1920 × 1080</span>
+            <span id="footer-separator">|</span>
+            <span id="footer-framerate">60 FPS</span>
+            <span id="footer-separator-2">|</span>
+            <span id="footer-overlay-status">Overlay: <span id="footer-overlay-state">Ready</span></span>
+        </footer>
+    </div>
+
+    <script src="JS\series_setup.js"></script>
+</body>
+
+</html>

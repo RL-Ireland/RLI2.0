@@ -4,8 +4,6 @@
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="JS/jquery.textfill.js"></script>
-  <script src="JS/import.js"></script>
-  <script src="https://apis.google.com/js/api.js"></script>
   <script src="JS/rl-websocket.js"></script>
   <script src="JS/tempWS.js"></script>
   <style>
@@ -128,7 +126,7 @@
           <input type="radio" checked="true" class="controller-chk-auto-set-names" id="autoNames" name="teamOptions" />
           <br />
           <h1 class="controller-auto-set-names-text">
-            <span>Use Google Sheet</span>
+            <span>Custom Series</span>
           </h1>
           <input type="radio" class="controller-chk-auto-set-names" id="sheetNames" name="teamOptions" />
           <br />
@@ -231,13 +229,11 @@
           <div class="controller-container03">
             <div class="controller-container04">
               <h1 class="controller-text43">
-                <span>Google Auth</span>
+                <span>Custom Series</span>
                 <br />
               </h1>
             </div>
             <div class="controller-container05">
-              <input type="text" placeholder="API_KEY" class="controller-txt-tourney-stage input" id="API_KEY" />
-              <input type="text" placeholder="CLIENT_ID" class="controller-txt-tourney-stage input" id="CLIENT_ID" />
               <button class="button" id="update" style="visibility:hidden;">
                 <span class="controller-text18">
                   <span>Update</span>
@@ -257,7 +253,7 @@
                 </span>
               </button>
               <span class="controller-text24" style="visibility:hidden;">
-                <span id="googleAuthText">Awaiting Auth....</span>
+                <span id="googleAuthText">Awaiting Data....</span>
                 <br />
               </span>
             </div>
