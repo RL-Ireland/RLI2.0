@@ -1080,3 +1080,31 @@ select:focus-visible {
 #shift-series-btn:active {
     transform: scale(0.98);
 }
+
+/* Reset series button (shared) */
+.reset-series-btn {
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 12px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-left: 8px;
+}
+
+.reset-series-btn:hover {
+    background-color: var(--bg-input-focus);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+    box-shadow: 0 0 8px rgba(248,113,113,0.2);
+}
+
+.reset-series-btn.small-reset {
+    font-size: 14px;
+    padding: 4px 8px;
+    margin-left: auto;
+}

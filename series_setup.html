@@ -35,8 +35,8 @@
                     <!-- Series Name Row -->
                     <div id="current-series-name-row">
                         <label id="current-series-name-label" for="current-series-name-input">Series:</label>
-                        <input type="text" id="current-series-name-input" class="series-name-textfield" value="Group Stage"
-                            maxlength="30">
+                        <input type="text" id="current-series-name-input" class="series-name-textfield"
+                            value="Group Stage" maxlength="30">
                     </div>
                     <!-- Teams and Score Row -->
                     <div id="current-series-matchup-row">
@@ -103,6 +103,10 @@
                     <button type="button" id="shift-series-btn" title="Rotate series upward (3→2→1→Current→3)">
                         🔄 Shift Series
                     </button>
+                    <button type="button" id="reset-current-series-btn" class="reset-series-btn"
+                        title="Reset Current Series to defaults">
+                        ↺ Reset
+                    </button>
                 </div>
             </section>
 
@@ -124,6 +128,8 @@
                                 class="visibility-textfield visibility-hidden" value="Hidden" maxlength="10" readonly>
                             <button type="button" class="visibility-toggle-btn other-vis-toggle"
                                 id="other-series-1-vis-toggle" title="Toggle visibility">⇄</button>
+                            <button type="button" id="reset-other-series-1-btn" class="reset-series-btn small-reset"
+                                title="Reset series">↺</button>
                         </div>
                         <div class="other-series-matchup-row">
                             <div class="other-team-logo-area" id="other-series-1-team-a-logo-area">
@@ -173,6 +179,8 @@
                                 class="visibility-textfield visibility-hidden" value="Hidden" maxlength="10" readonly>
                             <button type="button" class="visibility-toggle-btn other-vis-toggle"
                                 id="other-series-2-vis-toggle" title="Toggle visibility">⇄</button>
+                            <button type="button" id="reset-other-series-2-btn" class="reset-series-btn small-reset"
+                                title="Reset series">↺</button>
                         </div>
                         <div class="other-series-matchup-row">
                             <div class="other-team-logo-area" id="other-series-2-team-a-logo-area">
@@ -222,6 +230,8 @@
                                 class="visibility-textfield visibility-hidden" value="Hidden" maxlength="10" readonly>
                             <button type="button" class="visibility-toggle-btn other-vis-toggle"
                                 id="other-series-3-vis-toggle" title="Toggle visibility">⇄</button>
+                            <button type="button" id="reset-other-series-3-btn" class="reset-series-btn small-reset"
+                                title="Reset series">↺</button>
                         </div>
                         <div class="other-series-matchup-row">
                             <div class="other-team-logo-area" id="other-series-3-team-a-logo-area">

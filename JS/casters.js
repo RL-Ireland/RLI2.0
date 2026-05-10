@@ -2,87 +2,96 @@
 //Declare here if using across multiple function/need to keep the value for duration of series
 //These will only refresh if source is refreshed or the values are set in code
 
-
 $(() => {
     WsSubscribers.init(49322, true);
     WsSubscribers.subscribe("Games", "Info", (e) => {
 
+        // --- Headline and scrolling texts ---
         headlineText.innerHTML = e['headline'].toUpperCase();
         scrollText.innerHTML = " " + e['scrollTexts'][0].toUpperCase() + "        ";
         scrollText1.innerHTML = " " + e['scrollTexts'][1].toUpperCase() + "       ";
         scrollText2.innerHTML = " " + e['scrollTexts'][2].toUpperCase() + "       ";
         scrollText3.innerHTML = " " + e['scrollTexts'][3].toUpperCase() + "       ";
 
+        // --- Series formats (BoX) ---
         currentBo.innerHTML = e['currentSeries']['format'].toUpperCase();
         firstBo.innerHTML = e['otherSeries'][0]['format'].toUpperCase();
         secondBo.innerHTML = e['otherSeries'][1]['format'].toUpperCase();
         thirdBo.innerHTML = e['otherSeries'][2]['format'].toUpperCase();
 
+        // --- Other series titles ---
         firstSeries.innerHTML = e['otherSeries'][0]['name'].toUpperCase();
         secondSeries.innerHTML = e['otherSeries'][1]['name'].toUpperCase();
         thirdSeries.innerHTML = e['otherSeries'][2]['name'].toUpperCase();
 
+        // --- Current series team names ---
         currentBlueName.innerHTML = e['currentSeries']['teamA']['name'].toUpperCase();
         currentOrangeName.innerHTML = e['currentSeries']['teamB']['name'].toUpperCase();
 
+        // --- Other series team names ---
         nextBlueName.innerHTML = e['otherSeries'][0]['teamA']['name'].toUpperCase();
         nextOrangeName.innerHTML = e['otherSeries'][0]['teamB']['name'].toUpperCase();
-
         nextBlueName2.innerHTML = e['otherSeries'][1]['teamA']['name'].toUpperCase();
         nextOrangeName2.innerHTML = e['otherSeries'][1]['teamB']['name'].toUpperCase();
-
         nextBlueName3.innerHTML = e['otherSeries'][2]['teamA']['name'].toUpperCase();
         nextOrangeName3.innerHTML = e['otherSeries'][2]['teamB']['name'].toUpperCase();
 
+        // --- Always update the score text (even if hidden) ---
         firstScore.innerHTML = e['otherSeries'][0]['scoreA'] + "-" + e['otherSeries'][0]['scoreB'];
         secondScore.innerHTML = e['otherSeries'][1]['scoreA'] + "-" + e['otherSeries'][1]['scoreB'];
         thirdScore.innerHTML = e['otherSeries'][2]['scoreA'] + "-" + e['otherSeries'][2]['scoreB'];
 
-        /*if (e[0]['values'][7][1] != 0 || e[0]['values'][7][3] != 0) {
-            firstScoreArea.style.visibility = "visible";
-        } else {
-            firstScoreArea.style.visibility = "hidden";
-        }
-        if (e[0]['values'][10][1] != 0 || e[0]['values'][10][3] != 0) {
-            secondScoreArea.style.visibility = "visible";
-        } else {
-            secondScoreArea.style.visibility = "hidden";
-        }
-        if (e[0]['values'][13][1] != 0 || e[0]['values'][13][3] != 0) {
-            thirdScoreArea.style.visibility = "visible";
-        } else {
-            thirdScoreArea.style.visibility = "hidden";
-        }*/
-        /*if (e['otherSeries'][0]['visibility'] == "hidden") {
-            firstScoreArea.style.visibility = "hidden";
-            firstScore.style.visibility = "hidden";
-        }
-        else {
-            firstScoreArea.style.visibility = "visible";
-            firstScore.style.visibility = "visible";
-        }
-        if (e['otherSeries'][1]['visibility'] == "hidden") {
-            secondScoreArea.style.visibility = "hidden";
-            secondScore.style.visibility = "hidden";
-        }
-        else {
-            secondScoreArea.style.visibility = "visible";
-            secondScore.style.visibility = "visible";
-        }
-        if (e['otherSeries'][2]['visibility'] == "hidden") {
-            thirdScoreArea.style.visibility = "hidden";
-            thirdScore.style.visibility = "hidden";
-        }
-        else {
-            thirdScoreArea.style.visibility = "visible";
-            thirdScore.style.visibility = "visible";
-        }*/
-
+        // --- Set series container visibility ---
         currentSeries.style.visibility = e['currentSeries']['visibility'];
         nextSeries1.style.visibility = e['otherSeries'][0]['visibility'];
         nextSeries2.style.visibility = e['otherSeries'][1]['visibility'];
         nextSeries3.style.visibility = e['otherSeries'][2]['visibility'];
 
+        // --- Helper: Show score area only if series is visible AND at least one score > 0 ---
+        function setScoreVisibility(seriesVis, scoreA, scoreB, areaElem, scoreElem) {
+            // Convert seriesVis to lowercase string for case-insensitive compare
+            const isVisible = (String(seriesVis).toLowerCase() === 'visible');
+            // Convert scores to numbers (handles strings like "0", "1", etc.)
+            const a = Number(scoreA);
+            const b = Number(scoreB);
+            const hasNonZero = (a > 0 || b > 0);
+
+            // Debug logging (remove after testing)
+            console.log(`Series visible: ${seriesVis} -> ${isVisible}, Scores: ${a}-${b}, hasNonZero: ${hasNonZero}`);
+
+            if (isVisible && hasNonZero) {
+                areaElem.style.visibility = 'visible';
+                scoreElem.style.visibility = 'visible';
+            } else {
+                areaElem.style.visibility = 'hidden';
+                scoreElem.style.visibility = 'hidden';
+            }
+        }
+
+        // Apply to each "other series"
+        setScoreVisibility(
+            e['otherSeries'][0]['visibility'],
+            e['otherSeries'][0]['scoreA'],
+            e['otherSeries'][0]['scoreB'],
+            firstScoreArea,
+            firstScore
+        );
+        setScoreVisibility(
+            e['otherSeries'][1]['visibility'],
+            e['otherSeries'][1]['scoreA'],
+            e['otherSeries'][1]['scoreB'],
+            secondScoreArea,
+            secondScore
+        );
+        setScoreVisibility(
+            e['otherSeries'][2]['visibility'],
+            e['otherSeries'][2]['scoreA'],
+            e['otherSeries'][2]['scoreB'],
+            thirdScoreArea,
+            thirdScore
+        );
+
+        // --- Text fitting (unchanged) ---
         $('#headlineText').textfill({ maxFontPixels: 25, widthOnly: true });
         $('#scrollText').textfill({ maxFontPixels: 25, widthOnly: true });
         $('#scrollText1').textfill({ maxFontPixels: 25, widthOnly: true });
@@ -97,6 +106,7 @@ $(() => {
         $('#nextBlueName3').textfill({ maxFontPixels: 10, widthOnly: true });
         $('#nextOrangeName3').textfill({ maxFontPixels: 10, widthOnly: true });
 
+        // --- Team logos ---
         currentBlue.src = e['currentSeries']['teamA']['logo'];
         currentOrange.src = e['currentSeries']['teamB']['logo'];
         nextBlue.src = e['otherSeries'][0]['teamA']['logo'];
@@ -108,13 +118,14 @@ $(() => {
     });
 });
 
+// --- Clock update (unchanged) ---
 var intervalId = window.setInterval(function () {
     var oldDate = new Date();
-    var temp;
+    var newDate;
     if (oldDate.getMinutes() < 10) {
-        var newDate = oldDate.getHours() + ":0" + oldDate.getMinutes();
+        newDate = oldDate.getHours() + ":0" + oldDate.getMinutes();
     } else {
-        var newDate = oldDate.getHours() + ":" + oldDate.getMinutes();
+        newDate = oldDate.getHours() + ":" + oldDate.getMinutes();
     }
     time.innerHTML = newDate;
 }, 500);

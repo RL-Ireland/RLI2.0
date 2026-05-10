@@ -1,6 +1,6 @@
 // series_setup.js – Broadcast Overlay Control Panel
 // Saves selected logos through WebSocket → images saved to Images/teams/
-// Includes series rotation and default logo fallback.
+// Includes series rotation, default logo fallback, and per‑series reset.
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.teamLogoPaths = {};
 
     const DEFAULT_LOGO = 'Images/teams/default.png';
+    window.blueCount = 0;
+    window.orangeCount = 0;
 
     /**
      * Converts a file to base64 (without data URI prefix).
@@ -197,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function setCurrentSeries(data, logos) {
+    function setCurrentSeries(data) {
         document.getElementById('current-series-name-input').value = data.name;
         document.getElementById('current-series-team-a-input').value = data.teamA.name;
         document.getElementById('current-series-team-b-input').value = data.teamB.name;
@@ -248,8 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setLogoState(`other${i}B`, `other-series-${i}-team-b-logo-img`, `other-series-${i}-team-b-logo-input`);
     }
 
-    function shiftAllSeries() {
-        // Gather current state of all four series
+    window.shiftAllSeries = function () {
         const current = gatherCurrentSeriesData();
         const other1 = gatherOtherSeriesData(1);
         const other2 = gatherOtherSeriesData(2);
@@ -270,28 +271,144 @@ document.addEventListener('DOMContentLoaded', () => {
         rotatePath('currentA', 'other3A');
         rotatePath('currentB', 'other3B');
 
-        // Move the text / score / visibility data
-        setOtherSeries(2, other3);   // 3 → 2
-        setOtherSeries(1, other2);   // 2 → 1
-        setCurrentSeries(other1);    // 1 → Current
-        setOtherSeries(3, current);  // Current → 3
-    }
+        setOtherSeries(2, other3);
+        setOtherSeries(1, other2);
+        setCurrentSeries(other1);
+        setOtherSeries(3, current);
+    };
 
     const shiftBtn = document.getElementById('shift-series-btn');
     if (shiftBtn) {
         shiftBtn.addEventListener('click', shiftAllSeries);
     }
 
+    // ---------- Reset Series Functions ----------
+    function clearLogosForSeries(seriesPrefix, teamIds) {
+        teamIds.forEach(teamId => {
+            // Remove saved path
+            delete window.teamLogoPaths[teamId];
+            // Reset image and label
+            const imgMap = {
+                'currentA': 'current-team-a-logo-img',
+                'currentB': 'current-team-b-logo-img',
+                'other1A': 'other-series-1-team-a-logo-img',
+                'other1B': 'other-series-1-team-b-logo-img',
+                'other2A': 'other-series-2-team-a-logo-img',
+                'other2B': 'other-series-2-team-b-logo-img',
+                'other3A': 'other-series-3-team-a-logo-img',
+                'other3B': 'other-series-3-team-b-logo-img'
+            };
+            const labelMap = {
+                'currentA': 'current-team-a-logo-input',
+                'currentB': 'current-team-b-logo-input',
+                'other1A': 'other-series-1-team-a-logo-input',
+                'other1B': 'other-series-1-team-b-logo-input',
+                'other2A': 'other-series-2-team-a-logo-input',
+                'other2B': 'other-series-2-team-b-logo-input',
+                'other3A': 'other-series-3-team-a-logo-input',
+                'other3B': 'other-series-3-team-b-logo-input'
+            };
+
+            const imgEl = document.getElementById(imgMap[teamId]);
+            if (imgEl) {
+                imgEl.src = '';
+                imgEl.style.display = 'none';
+            }
+            const labelEl = document.querySelector(`label[for="${labelMap[teamId]}"]`);
+            if (labelEl) labelEl.style.display = 'block';
+        });
+    }
+
+    function resetCurrentSeries() {
+        // Reset text fields
+        document.getElementById('current-series-name-input').value = '';
+        document.getElementById('current-series-team-a-input').value = 'TBD';
+        document.getElementById('current-series-team-b-input').value = 'TBD';
+        document.getElementById('current-series-score-a-value').innerText = '0';
+        document.getElementById('current-series-score-b-value').innerText = '0';
+        document.getElementById('current-series-format-select').value = 'Bo7';
+
+        // Reset visibility to Visible
+        const visInput = document.getElementById('current-series-visibility-input');
+        visInput.value = 'Visible';
+        visInput.classList.remove('visibility-hidden');
+        visInput.classList.add('visibility-visible');
+        document.getElementById('current-series-visibility-dot').classList.remove('visibility-dot-hidden');
+        document.getElementById('current-series-visibility-dot').classList.add('visibility-dot-visible');
+
+        // Clear logos
+        clearLogosForSeries('current', ['currentA', 'currentB']);
+
+        //Reset Score counters
+        window.blueCount = 0;
+        window.orangeCount = 0;
+    }
+
+    function resetOtherSeries(i) {
+        const defaultName = '';   // series name can be left blank or reset to original like "Playa..." etc.? We'll clear it.
+        const defaultTeamA = 'TBD';
+        const defaultTeamB = (i === 3) ? 'TBA' : 'TBD';  // keep original TBA for Other 3 team B
+
+        document.getElementById(`other-series-${i}-name-input`).value = '';
+        document.getElementById(`other-series-${i}-team-a-input`).value = defaultTeamA;
+        document.getElementById(`other-series-${i}-team-b-input`).value = defaultTeamB;
+        document.getElementById(`other-series-${i}-score-a-value`).innerText = '0';
+        document.getElementById(`other-series-${i}-score-b-value`).innerText = '0';
+        document.getElementById(`other-series-${i}-format-select`).value = 'Bo7';
+
+        // Reset visibility to Hidden
+        const visInput = document.getElementById(`other-series-${i}-visibility-input`);
+        visInput.value = 'Hidden';
+        visInput.classList.remove('visibility-visible');
+        visInput.classList.add('visibility-hidden');
+        document.getElementById(`other-series-${i}-vis-dot`).classList.remove('visibility-dot-visible');
+        document.getElementById(`other-series-${i}-vis-dot`).classList.add('visibility-dot-hidden');
+
+        // Clear logos
+        clearLogosForSeries(`other${i}`, [`other${i}A`, `other${i}B`]);
+    }
+
+    // Attach reset buttons
+    const resetCurrentBtn = document.getElementById('reset-current-series-btn');
+    if (resetCurrentBtn) {
+        resetCurrentBtn.addEventListener('click', resetCurrentSeries);
+    }
+
+    for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById(`reset-other-series-${i}-btn`);
+        if (btn) {
+            btn.addEventListener('click', () => resetOtherSeries(i));
+        }
+    }
+
+    // ---- Global variable for current series format ----
+    window.currentSeriesFormat = 'Bo7'; // default fallback
+
+    function updateCurrentSeriesFormat() {
+        const select = document.getElementById('current-series-format-select');
+        if (select) {
+            window.currentSeriesFormat = select.value;
+        }
+    }
+
+    // Initialise the global immediately
+    updateCurrentSeriesFormat();
+
+    // Keep it up‑to‑date whenever the dropdown changes
+    const formatSelect = document.getElementById('current-series-format-select');
+    if (formatSelect) {
+        formatSelect.addEventListener('change', updateCurrentSeriesFormat);
+    }
+
     // ---------- Data Collection Function ----------
     function getLogoForTeam(teamId, imgElementId) {
-        // Priority: saved server path > currently displayed src (if custom) > default
         const saved = window.teamLogoPaths[teamId];
         if (saved && saved !== DEFAULT_LOGO) {
             return saved;
         }
         const imgEl = document.getElementById(imgElementId);
         if (imgEl && imgEl.style.display !== 'none' && imgEl.src && !imgEl.src.endsWith(DEFAULT_LOGO)) {
-            return imgEl.src; // data URL during preview
+            return imgEl.src;
         }
         return DEFAULT_LOGO;
     }
@@ -344,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     };
 
-    console.log('Control panel ready. Logos saved via WebSocket. Shift series available.');
+    console.log('Control panel ready. Logos saved via WebSocket. Shift & reset series available.');
 });
 
 // ---------- Helper & WebSocket initialisation ----------
@@ -354,6 +471,7 @@ function wait(ms) {
 
 wait(10000).then(() => {
     WsSubscribers2.init(49322, true);
+    WsSubscribers.init(49122, true);
 });
 
 // Listen for saved logo paths from the server
@@ -361,7 +479,6 @@ WsSubscribers2.subscribe("logo", "saved", (data) => {
     if (data && data.teamId && data.savedPath) {
         window.teamLogoPaths[data.teamId] = data.savedPath;
 
-        // Update the corresponding image element
         const imgMap = {
             'currentA': 'current-team-a-logo-img',
             'currentB': 'current-team-b-logo-img',
@@ -376,7 +493,6 @@ WsSubscribers2.subscribe("logo", "saved", (data) => {
         if (imgEl) {
             imgEl.src = data.savedPath;
             imgEl.style.display = 'block';
-            // Hide the + label
             const labelMap = {
                 'currentA': 'current-team-a-logo-input',
                 'currentB': 'current-team-b-logo-input',
@@ -398,3 +514,168 @@ WsSubscribers2.subscribe("logo", "saved", (data) => {
 WsSubscribers2.subscribe("Data", "request", (d) => {
     WsSubscribers2.send("Data", "receive", window.getOverlayData());
 });
+
+WsSubscribers.subscribe("game", "match_ended", (e) => {
+    if (e['winner_team_num'] == 0) {
+        if (window.blueCount == 0) {
+            document.getElementById("current-series-score-a-value").innerText = 1;
+            window.blueCount = 1;
+        } else if (blueCount == 1) {
+            document.getElementById("current-series-score-a-value").innerText = 2;
+            window.blueCount = 2;
+        } else if (blueCount == 2) {
+            document.getElementById("current-series-score-a-value").innerText = 3;
+            window.blueCount = 3;
+        } else if (blueCount == 3) {
+            document.getElementById("current-series-score-a-value").innerText = 4;
+            window.blueCount = 4;
+        } else if (blueCount == 4) {
+            document.getElementById("current-series-score-a-value").innerText = 5;
+            window.blueCount = 5;
+        }
+    } else {
+        if (orangeCount == 0) {
+            document.getElementById("current-series-score-b-value").innerText = 1;
+            window.orangeCount = 1;
+        } else if (orangeCount == 1) {
+            document.getElementById("current-series-score-b-value").innerText = 2;
+            window.orangeCount = 2;
+        } else if (orangeCount == 2) {
+            document.getElementById("current-series-score-b-value").innerText = 3;
+            window.orangeCount = 3;
+        } else if (orangeCount == 3) {
+            document.getElementById("current-series-score-b-value").innerText = 4;
+            window.orangeCount = 4;
+        } else if (orangeCount == 4) {
+            document.getElementById("current-series-score-b-value").innerText = 5;
+            window.orangeCount = 5;
+        }
+    }
+});
+
+WsSubscribers2.subscribe("series", "BluePlus", (e) => {
+    window.blueCount += 1;
+    document.getElementById("current-series-score-a-value").innerText = window.blueCount;
+    if (checkIfSeriesEnded()) {
+        window.shiftAllSeries();
+    }
+});
+
+WsSubscribers2.subscribe("series", "BlueMinus", (e) => {
+    window.blueCount -= 1;
+    document.getElementById("current-series-score-a-value").innerText = window.blueCount;
+});
+
+WsSubscribers2.subscribe("series", "OrangePlus", (e) => {
+    window.orangeCount += 1;
+    document.getElementById("current-series-score-b-value").innerText = window.orangeCount;
+    if (checkIfSeriesEnded()) {
+        window.shiftAllSeries();
+    }
+});
+
+WsSubscribers2.subscribe("series", "OrangeMinus", (e) => {
+    window.orangeCount -= 1;
+    document.getElementById("current-series-score-b-value").innerText = window.orangeCount;
+});
+
+WsSubscribers2.subscribe("series", "none", (e) => {
+    window.orangeCount = 0;
+    window.blueCount = 0;
+    document.getElementById("current-series-score-a-value").innerText = window.blueCount;
+    document.getElementById("current-series-score-b-value").innerText = window.orangeCount;
+});
+
+WsSubscribers2.subscribe("series", "bo3", (e) => {
+    window.orangeCount = 0;
+    window.blueCount = 0;
+    document.getElementById("current-series-score-a-value").innerText = window.blueCount;
+    document.getElementById("current-series-score-b-value").innerText = window.orangeCount;
+});
+
+WsSubscribers2.subscribe("series", "bo5", (e) => {
+    window.orangeCount = 0;
+    window.blueCount = 0;
+    document.getElementById("current-series-score-a-value").innerText = window.blueCount;
+    document.getElementById("current-series-score-b-value").innerText = window.orangeCount;
+});
+
+WsSubscribers2.subscribe("series", "bo7", (e) => {
+    window.orangeCount = 0;
+    window.blueCount = 0;
+    document.getElementById("current-series-score-a-value").innerText = window.blueCount;
+    document.getElementById("current-series-score-b-value").innerText = window.orangeCount;
+});
+
+WsSubscribers2.subscribe("series", "bo9", (e) => {
+    window.orangeCount = 0;
+    window.blueCount = 0;
+    document.getElementById("current-series-score-a-value").innerText = window.blueCount;
+    document.getElementById("current-series-score-b-value").innerText = window.orangeCount;
+});
+
+WsSubscribers.subscribe("game", "podium_start", (e) => {
+    if (checkIfSeriesEnded()) {
+        wait(11900).then(() => {
+            window.shiftAllSeries();
+        });
+    }
+});
+
+function checkIfSeriesEnded() {
+    switch (window.currentSeriesFormat) {
+        case 'Show Match':
+            if (window.blueCount == 1 || window.orangeCount == 1) {
+                window.blueCount = 0;
+                window.orangeCount = 0;
+                return true;
+            }
+            else {
+                return false;
+            }
+            break;
+        case 'Bo3':
+            if (window.blueCount == 2 || window.orangeCount == 2) {
+                window.blueCount = 0;
+                window.orangeCount = 0;
+                return true;
+            }
+            else {
+                return false;
+            }
+            break;
+        case 'Bo5':
+            if (window.blueCount == 3 || window.orangeCount == 3) {
+                window.blueCount = 0;
+                window.orangeCount = 0;
+                return true;
+            }
+            else {
+                return false;
+            }
+            break;
+        case 'Bo7':
+            if (window.blueCount == 4 || window.orangeCount == 4) {
+                window.blueCount = 0;
+                window.orangeCount = 0;
+                return true;
+            }
+            else {
+                return false;
+            }
+            break;
+        case 'Bo9':
+            if (window.blueCount == 5 || window.orangeCount == 5) {
+                window.blueCount = 0;
+                window.orangeCount = 0;
+                return true;
+            }
+            else {
+                return false;
+            }
+            break;
+        default:
+            console.log(`No case found for: ${window.currentSeriesFormat}, returning false as fallback`);
+            return false;
+    }
+}
